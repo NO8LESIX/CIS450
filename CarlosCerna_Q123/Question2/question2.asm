@@ -23,38 +23,53 @@ _TEXT	SEGMENT
 _j$ = -8						; size = 4
 _i$ = -4						; size = 4
 _main	PROC
+
+; signed int j;
+; signed int i;
+
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
   00003	83 ec 08	 sub	 esp, 8
   00006	c7 45 fc 14 00
+  ; i = 20
 	00 00		 mov	 DWORD PTR _i$[ebp], 20	; 00000014H
+	;go to $LN4
   0000d	eb 09		 jmp	 SHORT $LN4@main
 $LN2@main:
+	;i++
   0000f	8b 45 fc	 mov	 eax, DWORD PTR _i$[ebp]
   00012	83 c0 01	 add	 eax, 1
   00015	89 45 fc	 mov	 DWORD PTR _i$[ebp], eax
 $LN4@main:
+; while(i != 30){
   00018	83 7d fc 1e	 cmp	 DWORD PTR _i$[ebp], 30	; 0000001eH
   0001c	7f 34		 jg	 SHORT $LN1@main
+  ; x = (i * y ) + 33
   0001e	8b 4d fc	 mov	 ecx, DWORD PTR _i$[ebp]
   00021	0f af 0d 00 00
 	00 00		 imul	 ecx, DWORD PTR _y      ; ecx <- ecx * y
   00028	83 c1 21	 add	 ecx, 33			; 00000021H
   0002b	89 0d 00 00 00
 	00		 mov	 DWORD PTR _x, ecx
+	; if(x == 20){
   00031	83 3d 00 00 00
 	00 14		 cmp	 DWORD PTR _x, 20	; 00000014H
   00038	7f 0b		 jg	 SHORT $LN5@main
   0003a	8b 15 00 00 00
+  ;}
+
+  ; j = x;
 	00		 mov	 edx, DWORD PTR _x
   00040	89 55 f8	 mov	 DWORD PTR _j$[ebp], edx
   00043	eb 0b		 jmp	 SHORT $LN6@main
 $LN5@main:
+; j = x + 2
   00045	a1 00 00 00 00	 mov	 eax, DWORD PTR _x
   0004a	83 c0 02	 add	 eax, 2
   0004d	89 45 f8	 mov	 DWORD PTR _j$[ebp], eax
 $LN6@main:
   00050	eb bd		 jmp	 SHORT $LN2@main
+  ;} end while
 $LN1@main:
   00052	33 c0		 xor	 eax, eax
   00054	8b e5		 mov	 esp, ebp
