@@ -1,0 +1,137 @@
+		  CIS 450 Assignment 1		       Spring, 2020
+
+Due: Question1, 2, and 3: 3:00pm on 2/19/2020 (Wednesday)  
+     Question4: 3:00pm on 2/21/2020 (Friday)
+       I have office hours until 2:00pm on 2/19 and 2/21
+
+1. Reverse compile the program in question1.asm (obtain a possible C source program for
+   question1.asm) by following steps, A, B, and C, below.
+   Note that the original program does not do any meaningful computation.
+   
+   You can assume that all 4 byte variables are of type (signed) int
+   (exceptions: argv and envp are of type (char **))
+   Determine the types of 2-byte and 1-byte variables from the code
+   Hint: pay attention to the integral promotion applied to these variables
+   
+   A: Draw a memory image of the execution of the program, consisting of the data, bss, and stack segments
+      (like the figure on slide CIS450-1-49).
+      You must write the names of all variables in data and bss, and 
+      the names and offsets of all local variables and parameters.
+      
+      Hint: In the first step of reverse compilation, you should determine (1) the size (short, char, int), 
+      (2) the location (bss, data, or frame: if frame, determine the offset), (3) exported or not, and 
+      (4) the signed/unsigned property of each variable.
+     
+   B: Draw a flowchart of function main() (like the figures on slide CIS450-1-50).
+      
+   C: Based on your memory image and flowchart, insert a C code line as a comment right
+      before the corresponding sequence of assembly lines.
+      
+      For example, 
+	
+	; u2 = x + 6;  <= insert this line here
+	 
+	   00019	8b 55 f8	 mov	 edx, DWORD PTR _x$[ebp]
+	   0001c	83 c2 06	 add	 edx, 6
+	   0001f	66 89 15 00 00
+	 	00 00		 mov	 WORD PTR _u2, dx
+
+      You can directly modify file question1.asm.
+      Since it will be easier for us to grade your work if we can see a C program, include your C program, too.
+      
+   You do not need to simulate the execution or write values of any variable.
+   (I do not even know if the program terminates)
+
+2. Reverse compile the program in question2.asm by following the steps A, B, and C, below
+   The original program does not do any meaningful computation.
+   
+   You can assume that all 4 byte variables are of type (signed) int
+   
+   A: Draw a memory image of the execution of the program, consisting of the data, bss, and stack segments.
+      You must write the names of all variables in data and bss, and the names and
+      offsets of all local variables and parameters.
+    
+   B: Draw a flowchart of function main().
+   
+   C: insert a C code line as a comment right before the corresponding sequence of assembly lines in question2.asm.
+   
+  
+3. Reverse compile the program in question3.asm.
+ 
+   You can assume that all 4 byte variables are of type (signed) int
+   Determine the types of 2-byte and 1-byte variables from the code.
+   
+   A: (1) Draw memory images of the data and bss segments.
+          You must write the names of all variables.
+      (2) Draw memory images (frames) of functions main() and trace_me().
+          You must write the names and offsets of all local variables and parameters.
+   B; Draw a flowchart of function trace_me().
+   C: Insert a C code line as a comment right before the corresponding sequence of assembly lines in question3.asm
+   D: By simulating the execution of your C program, draw a memory image of the program execution 
+      (consisting of data, bss, and stack) right before printf is invoked  (call _printf) - 
+      you do not need to draw the stack frame for printf. 
+      (Refer to the figure on slide CIS450-1-51). 
+      
+      You must write the names and values of all variables (up to printf is called).
+      
+      When a value in a variable is updated, cross off the old value (do not erase)
+      and write the new value on the left side of the old value - we want to
+      see the history of values in each variable.
+      
+      Write the output of the program.
+   
+4. Reverse compile the program in question4.asm
+   
+    You can assume that all 4 byte variables are of type (signed) int
+    Determine the types of 2-byte and 1-byte variables from the code
+    
+    A: (1) Draw memory images of the data and bss segments.
+           You must write the names of all variables
+       (2) Draw memory images (frames) of functions main() and trace_me().
+           You must write the names and offsets of all local variables and parameters.
+    B; Draw a flowchart of function trace_me().
+    C: Insert a C code line as a comment right before the corresponding sequence of assembly lines in question4.asm.
+    D: Simulate the execution of the program by drawing a memory image of the execution (data, bss, and stack of frames)
+       For each variable, you must write the name and the history of values
+
+       When printf( ) is called in f( ) or main( ), you do not need to draw its frame.
+
+       Assuming the printf terminates normally, continue your simulation (and update
+       values of variables) until the end of the execution.
+       When a stack frame is deallocated, you DO NOT need to erase or cross off the corresponding frame image in your figure.
+
+       Write the output of the program.
+
+       Hint: In the execution of the program, f() is called twice recursively.
+   
+How to submit:
+Questions1, 2, and 3
+1. Create a top-level submission directory after your LastName_FirstName_Q123
+   (e.g., Mizuno_Masaaki_Q123 in my case)
+2. In the top-level directory, create 3 sub-directories and name them
+   Question1, Question2, and Question3, respectively
+3. In each sub directory, put your answer files
+
+   For each question, submit your C program (.c file and modified .asm file) and drawings of memory images 
+   and flowcharts (for drawing, I would like you to use a drawing tool, but a photo 
+   or scan of hand drawing will be accepted as long as we can clearly read all characters.
+   
+4. Zip the top-level submission directory and submit the zip file in Assignment1 in
+   KSOL (Canvas) by 3:00pm on 2/19
+ 
+Question4
+1. Create a top-level directory after your LastName_FirstName_Q4
+2. Create a sub-directory and name it Question4.
+3. Put your answer files in Question4.
+4. Zip the top-level directory and submit the zip file in Assignment 1 in KSOL by
+   3:00pm on 2/21.
+  
+Note: I have not asked students to submit more than one file in one assignment.
+      If you have any issues submitting your 2nd zip file, please inform me.
+   
+
+To prepare for Exam1 and further understanding the subject for the future, I strongly encourage you to 
+  (1) create various C programs that include C language constructs you would like to understand in depth, 
+  (2) compile the C programs to generate asssembly files, and 
+  (3) read and understand the assembly programs.
+
