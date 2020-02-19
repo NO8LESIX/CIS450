@@ -33,44 +33,61 @@ _argc$ = 8						; size = 4
 _argv$ = 12						; size = 4
 _envp$ = 16						; size = 4
 _main	PROC
+
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
   00003	83 ec 0c	 sub	 esp, 12			; 0000000cH
   00006	0f bf 05 00 00
 	00 00		 movsx	 eax, WORD PTR _s1
   0000d	6b 0d 00 00 00
+
+  ; i = 3;  
 	00 03		 imul	 ecx, DWORD PTR _i, 3   ; ecx <= i * 3
   00014	03 c1		 add	 eax, ecx
-  00016	89 45 f8	 mov	 DWORD PTR _x$[ebp], eax
+  00016	89 45 f8	 mov	 DWORD PTR _x$[ebp], eax ; x = 9?
+
+  ; u2 = x + 6
   00019	8b 55 f8	 mov	 edx, DWORD PTR _x$[ebp]
   0001c	83 c2 06	 add	 edx, 6
   0001f	66 89 15 00 00
 	00 00		 mov	 WORD PTR _u2, dx
   00026	0f bf 05 00 00
-	00 00		 movsx	 eax, WORD PTR _s1
+
+  ; ui = s1 + 15;
+	00 00		 movsx	 eax, WORD PTR _s1 ; sign extention on s1
   0002d	83 c0 0f	 add	 eax, 15			; 0000000fH
   00030	a3 00 00 00 00	 mov	 DWORD PTR _ui, eax
+
+  ;c = 5;
   00035	c6 45 ff 05	 mov	 BYTE PTR _c$[ebp], 5
   00039	c7 45 f4 00 00
+  ; y = 0;
 	00 00		 mov	 DWORD PTR _y$[ebp], 0
 $LN4@main:
+  ; u2 = y + 1;
   00040	8b 4d f4	 mov	 ecx, DWORD PTR _y$[ebp]
   00043	83 c1 01	 add	 ecx, 1
   00046	89 4d f4	 mov	 DWORD PTR _y$[ebp], ecx
   00049	0f b7 15 00 00
 	00 00		 movzx	 edx, WORD PTR _u2
+	; x = x - c
   00050	8b 45 f8	 mov	 eax, DWORD PTR _x$[ebp]
   00053	2b c2		 sub	 eax, edx
   00055	0f be 4d ff	 movsx	 ecx, BYTE PTR _c$[ebp]
   00059	2b c1		 sub	 eax, ecx
   0005b	89 45 f8	 mov	 DWORD PTR _x$[ebp], eax
+  ; if(x == 0)
   0005e	83 7d f8 00	 cmp	 DWORD PTR _x$[ebp], 0
   00062	7f dc		 jg	 SHORT $LN4@main
   00064	8b 15 00 00 00
 	00		 mov	 edx, DWORD PTR _i
+	;shift bits by 1 to the left
   0006a	d1 e2		 shl	 edx, 1
+  ;if(x == i)
   0006c	39 55 f8	 cmp	 DWORD PTR _x$[ebp], edx
   0006f	7d 17		 jge	 SHORT $LN5@main
+
+    ;ui = c + u2 * 4 + 45
   00071	0f be 45 ff	 movsx	 eax, BYTE PTR _c$[ebp]
   00075	0f b7 0d 00 00
 	00 00		 movzx	 ecx, WORD PTR _u2
@@ -78,6 +95,10 @@ $LN4@main:
   00080	89 15 00 00 00
 	00		 mov	 DWORD PTR _ui, edx
   00086	eb 13		 jmp	 SHORT $LN1@main
+
+  ; else{
+  ; i = (x + y) - c;
+  ; }
 $LN5@main:
   00088	8b 45 f8	 mov	 eax, DWORD PTR _x$[ebp]
   0008b	03 45 f4	 add	 eax, DWORD PTR _y$[ebp]
