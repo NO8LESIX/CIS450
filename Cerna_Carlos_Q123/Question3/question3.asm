@@ -15,8 +15,8 @@ _DATA	SEGMENT
 COMM	_m:BYTE
 _DATA	ENDS
 _DATA	SEGMENT
-_i	DD	08H
-_k	DD	01H
+_i	DD	08H ; int i = 8
+_k	DD	01H ; int i = 1
 _DATA	ENDS
 PUBLIC	_trace_me
 PUBLIC	_main
@@ -24,7 +24,7 @@ _BSS	SEGMENT
 _j	DW	01H DUP (?)
 _BSS	ENDS
 _DATA	SEGMENT
-?o@?1??trace_me@@9@9 DW 07H				; `trace_me'::`2'::o
+?o@?1??trace_me@@9@9 DW 07H		; short o = 7		; `trace_me'::`2'::o
 $SG9162	DB	0aH, '%d', 09H, '%d', 09H, '%d', 09H, '%d', 0aH, 00H
 _DATA	ENDS
 ; Function compile flags: /Odtp
@@ -40,7 +40,7 @@ _main	PROC
   0000a	0f b6 05 00 00
 	00 00		 movzx	 eax, BYTE PTR _m
 
-	; trace_me(eax, 1)
+	; trace_me(m, 1)
   00011	50		 push	 eax
   00012	6a 01		 push	 1
   00014	e8 00 00 00 00	 call	 _trace_me
@@ -58,37 +58,48 @@ _n$ = -1						; size = 1
 _param1$ = 8						; size = 4
 _param2$ = 12						; size = 4
 
- ;char m
- ;int parm1 = 8
- ;int parm2 = 12
+ ;char n
+ ;int param1
+ ;int param2
 
 _trace_me PROC
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
   00003	51		 push	 ecx        ; this does the same effect as  (esp <- esp - 4)
+  
+  ;n = param2 + 3
   00004	8b 45 0c	 mov	 eax, DWORD PTR _param2$[ebp]
   00007	83 c0 03	 add	 eax, 3
   0000a	88 45 ff	 mov	 BYTE PTR _n$[ebp], al
   0000d	8b 0d 00 00 00
+
+  ; k = k + 1
 	00		 mov	 ecx, DWORD PTR _k
   00013	83 c1 01	 add	 ecx, 1
   00016	89 0d 00 00 00
 	00		 mov	 DWORD PTR _k, ecx
   0001c	0f b7 15 00 00
-	00 00		 movzx	 edx, WORD PTR ?o@?1??trace_me@@9@9
+
+    ;i = o + i;
+	00 00		 movzx	 edx, WORD PTR ?o@?1??trace_me@@9@9 ; recursive call
   00023	03 15 00 00 00
 	00		 add	 edx, DWORD PTR _i
   00029	89 15 00 00 00
 	00		 mov	 DWORD PTR _i, edx
+
+    ;m = k - n
   0002f	0f be 45 ff	 movsx	 eax, BYTE PTR _n$[ebp]
   00033	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _k
   00039	2b c8		 sub	 ecx, eax
   0003b	88 0d 00 00 00
 	00		 mov	 BYTE PTR _m, cl
+    ;if(param1 != 0){
   00041	83 7d 08 00	 cmp	 DWORD PTR _param1$[ebp], 0
   00045	75 2c		 jne	 SHORT $LN2@trace_me
   00047	0f b6 15 00 00
+    ;}
+    ;printf("{},{},{},{}", m,k,j,i)
 	00 00		 movzx	 edx, BYTE PTR _m
   0004e	52		 push	 edx
   0004f	a1 00 00 00 00	 mov	 eax, DWORD PTR _k
@@ -103,22 +114,27 @@ _trace_me PROC
   00069	e8 00 00 00 00	 call	 _printf
   0006e	83 c4 14	 add	 esp, 20			; 00000014H
   00071	eb 2e		 jmp	 SHORT $LN1@trace_me
+
 $LN2@trace_me:
+    ;j = j + n
   00073	0f be 45 ff	 movsx	 eax, BYTE PTR _n$[ebp]
   00077	0f bf 0d 00 00
 	00 00		 movsx	 ecx, WORD PTR _j
   0007e	03 c8		 add	 ecx, eax
   00080	66 89 0d 00 00
 	00 00		 mov	 WORD PTR _j, cx
+    ;trace_me() + param2
   00087	0f b7 15 00 00
 	00 00		 movzx	 edx, WORD PTR ?o@?1??trace_me@@9@9
   0008e	03 55 0c	 add	 edx, DWORD PTR _param2$[ebp]
   00091	52		 push	 edx
+  ; trace_me(param1 - 1)
   00092	8b 45 08	 mov	 eax, DWORD PTR _param1$[ebp]
   00095	83 e8 01	 sub	 eax, 1
   00098	50		 push	 eax
   00099	e8 00 00 00 00	 call	 _trace_me
   0009e	83 c4 08	 add	 esp, 8
+
 $LN1@trace_me:
   000a1	8b e5		 mov	 esp, ebp
   000a3	5d		 pop	 ebp

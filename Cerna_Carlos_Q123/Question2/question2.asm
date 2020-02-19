@@ -41,7 +41,7 @@ $LN2@main:
   00012	83 c0 01	 add	 eax, 1
   00015	89 45 fc	 mov	 DWORD PTR _i$[ebp], eax
 $LN4@main:
-; while(i != 30){
+; while(i >y 30){
   00018	83 7d fc 1e	 cmp	 DWORD PTR _i$[ebp], 30	; 0000001eH
   0001c	7f 34		 jg	 SHORT $LN1@main
   ; x = (i * y ) + 33
