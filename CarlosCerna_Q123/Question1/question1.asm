@@ -11,17 +11,17 @@ INCLUDELIB OLDNAMES
 
 PUBLIC	_s1
 _DATA	SEGMENT
-COMM	_ui:DWORD
+COMM	_ui:DWORD ; is this a 
 _DATA	ENDS
 _DATA	SEGMENT
-_s1	DW	0cH
+_s1	DW	0cH ; 2 bytes
 _DATA	ENDS
 PUBLIC	_main
 _BSS	SEGMENT
-_u2	DW	01H DUP (?)
+_u2	DW	01H DUP (?) ; 2 bytes no value
 _BSS	ENDS
 _DATA	SEGMENT
-_i	DD	018H
+_i	DD	018H ; 4 bytes
 _DATA	ENDS
 ; Function compile flags: /Odtp
 ; File c:\K-State\cis450\runs\2020S\Assignment1\Assignment2_OriginalPrograms\question1.c
